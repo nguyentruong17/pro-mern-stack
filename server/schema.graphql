@@ -1,0 +1,49 @@
+#Scalar -- custom type
+#To be able to use a scalar, the followings need to be done
+## 1.define the scalar with name in the schema using the kw scalar
+## 2.add the top-lvl resolver for this custom scalar, which handles serializationing and parsing
+## (the resolver needs to be an object of class GraphQLScalarType)
+scalar GraphQLDate
+
+
+#Schema def is a JS String (if written in a .js file)
+#all arguments of a field must be named
+type Issue {
+    id: String!
+    title: String!
+    status: StatusType!
+    owner: String!
+    created_at: GraphQLDate!
+    efforts: Int
+    due_at: GraphQLDate
+}
+
+input InputIssue {
+    title: String!
+    "Optional, will be set to New if not supplied" #description
+    status: StatusType = New #default value to New
+    owner: String!
+    effort: Int
+    due_at: GraphQLDate
+    # this is different from type Issue, since fields like id and created_at are handled by the server
+}
+
+enum StatusType {
+    New
+    Assigned
+    Fixed
+    Closed
+}
+
+
+### TOP LEVEL ###
+
+type Query {
+  about: String!
+  issues: [Issue!]! #the return value cannot be null, as well as each element in the list
+}
+
+type Mutation {
+  setAboutMessage(message: String!): String
+  addIssue(issue: InputIssue!): Issue!
+}
