@@ -1,26 +1,48 @@
 const express = require('express');
 const { ApolloServer, UserInputError } = require('apollo-server-express')
+const { MongoClient } = require('mongodb')
 const fs = require('fs')
 const { GraphQLScalarType } = require('graphql');
 //const { serialize } = require('v8');
 const { Kind, parseValue } = require('graphql/language')
 const app = express();
+const DB_URL = 'mongodb://localhost/issuetracker';
 
 app.use(express.static('public'));
 
 let aboutMessage = 'Issue Tracker API 1.0'
-let issuesDB =  [
-  {
-    id: 1, status: 'New', owner: 'Ravan', effort: 5,
-    created_at: new Date('2018-08-15'), due_at: undefined,
-    title: 'Error in console when clicking Add',
-  },
-  {
-    id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-    created_at: new Date('2018-08-16'), due_at: new Date('2018-08-30'),
-    title: 'Missing bottom border on panel',
-  },
-];
+// let issuesDB =  [
+//   {
+//     id: 1, status: 'New', owner: 'Ravan', effort: 5,
+//     created_at: new Date('2018-08-15'), due_at: undefined,
+//     title: 'Error in console when clicking Add',
+//   },
+//   {
+//     id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
+//     created_at: new Date('2018-08-16'), due_at: new Date('2018-08-30'),
+//     title: 'Missing bottom border on panel',
+//   },
+// ];
+let db
+
+const connectDB = async () => {
+  const client = new MongoClient(DB_URL, { useNewUrlParser: true })
+  await client.connect()
+  console.log('DB Connected!')
+  db = client.db()
+}
+
+const connectExpress = async () => {
+  try {
+    await connectDB()
+    app.listen(3000, function () {
+      console.log('App started on port 3000');
+    });
+  } catch (e) {
+    console.log('ERR', e1)
+  }
+  
+}
 
 
 //RESOLVERS
@@ -29,8 +51,13 @@ const setAboutMessage = (obj, args, context, info) => {
   return aboutMessage = message
 }
 
-const issues = (obj, args, context, info) => {
-  return issuesDB
+const issues = (obj, args, context, info) => { //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
+  //return issuesDB
+  if(!db) {
+    console.log('DB is not connected')
+    return []
+  }
+  return db.collection('issues').find().toArray() //async
 }
 
 const GraphQLDate = new GraphQLScalarType({
@@ -59,10 +86,10 @@ const GraphQLDate = new GraphQLScalarType({
 })
 
 //https://stackoverflow.com/questions/43855166/how-to-tell-if-two-dates-are-in-the-same-day
-const isSameDay = (d1, d2) => {
-  return d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
+const isCreatedLTEDue = (created_date, due_date) => {
+  return created_date.getFullYear() <= due_date.getFullYear() &&
+    created_date.getMonth() <= due_date.getMonth() &&
+    created_date.getDate() <= due_date.getDate();
 }
 const validateAddingIssue = (issueToBeAdded) => {
   const errors = []
@@ -71,7 +98,7 @@ const validateAddingIssue = (issueToBeAdded) => {
     errors.push('Title must be at least 3 characters long!')
   }
 
-  if (issueToBeAdded.due_at && !isSameDay(issueToBeAdded.created_at,issueToBeAdded.due_at)) {
+  if (issueToBeAdded.due_at && !isCreatedLTEDue(issueToBeAdded.created_at, issueToBeAdded.due_at)) {
     errors.push('Due date must be after created date!')
   }
 
@@ -80,16 +107,28 @@ const validateAddingIssue = (issueToBeAdded) => {
   }
 }
 
-const addIssue = (obj, args, context, info) => {
+const getNextSequence = async (collectionName) => {
+  const returnDoc = await db.collection('counters').findOneAndUpdate( //atomic manner
+    { _id: collectionName }, //filter
+    { $inc: {current: 1} }, //update query, increment the current counter by 1
+    { returnOriginal: false } //mongodb in default will return an instance of the document before being modified
+  ) 
+  return returnDoc.value.current //check NodeJS MongoDB Driver API for returning object
+}
+
+const addIssue = async (obj, args, context, info) => {
   const { issue } = args
   
-  issue.id = issuesDB.length + 1 //will be replaced with id system like uuid4
+  issue.id = await getNextSequence('issues')
   if (!issue.status) issue.status = 'New'
   issue.created_at = new Date()
   //console.log(typeof issue.due_at)
   validateAddingIssue(issue)
-  issuesDB = [...issuesDB, issue]
-  return issue
+  const returnDoc = await db.collection('issues').insertOne(issue) // ibsert to the server
+  const createdIssue = await db.collection('issues').findOne( // find the one created on the server
+    { _id: returnDoc.insertedId }
+  )
+  return createdIssue //anw, i dont see the point of finding the issue on the server, bc we can just append the insertedId to our object and return it
 }
 
 
@@ -130,6 +169,4 @@ const server = new ApolloServer({
 //mounting the middleware to /graphql path
 server.applyMiddleware({ app, path: '/graphql' })
 
-app.listen(3000, function () {
-  console.log('App started on port 3000');
-});
+connectExpress()

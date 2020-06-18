@@ -9,7 +9,7 @@ scalar GraphQLDate
 #Schema def is a JS String (if written in a .js file)
 #all arguments of a field must be named
 type Issue {
-    id: String!
+    id: ID!
     title: String!
     status: StatusType!
     owner: String!

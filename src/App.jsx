@@ -12,7 +12,7 @@ function IssueRow(props) {
       <td>{issue.status}</td>
       <td>{issue.owner}</td>
       <td>{issue.created_at}</td>
-      <td>{issue.effort}</td>
+      <td>{issue.efforts}</td>
       <td>{issue.due_at}</td>
       <td>{issue.title}</td>
     </tr>
