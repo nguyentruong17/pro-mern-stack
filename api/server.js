@@ -5,7 +5,12 @@ const fs = require('fs')
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language')
 const app = express();
-const DB_URL = 'mongodb://localhost/issuetracker';
+
+require('dotenv').config()
+const DB_URL = process.env.DB_URL || 'mongodb://localhost/issuetracker';
+const PORT = process.env.API_SERVER_PORT || 3000
+const ENABLE_CORS = process.env.ENABLE_CORS
+
 
 
 let aboutMessage = 'Issue Tracker API 1.0'
@@ -33,8 +38,8 @@ const connectDB = async () => {
 const connectExpress = async () => {
   try {
     await connectDB()
-    app.listen(8000, function () {
-      console.log('API Server started on port 8000');
+    app.listen(PORT, function () {
+      console.log(`API Server started on port ${PORT}`);
     });
   } catch (e) {
     console.log('ERR', e1)
@@ -169,6 +174,6 @@ const server = new ApolloServer({
 
 //install the ApolloServer as a middleware in Express
 //mounting the middleware to /graphql path
-server.applyMiddleware({ app, path: '/graphql' })
+server.applyMiddleware({ app, path: '/graphql', cors: !!ENABLE_CORS }) //cors default to true in apollo-server
 
 connectExpress()
