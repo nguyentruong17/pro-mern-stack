@@ -1,3 +1,10 @@
-node_modules
 package-lock.json
-public/App.js
+
+ui/node_modules
+ui/public/App.js
+ui/.env
+ui/package-lock.json
+
+api/node_modules
+api/.env
+api/package-lock.json

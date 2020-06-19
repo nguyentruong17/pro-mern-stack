@@ -7,7 +7,6 @@ const { Kind } = require('graphql/language')
 const app = express();
 const DB_URL = 'mongodb://localhost/issuetracker';
 
-app.use(express.static('public'));
 
 let aboutMessage = 'Issue Tracker API 1.0'
 // let issuesDB =  [
@@ -34,8 +33,8 @@ const connectDB = async () => {
 const connectExpress = async () => {
   try {
     await connectDB()
-    app.listen(3000, function () {
-      console.log('App started on port 3000');
+    app.listen(8000, function () {
+      console.log('API Server started on port 8000');
     });
   } catch (e) {
     console.log('ERR', e1)
@@ -159,7 +158,7 @@ const resolvers = {
 }
 
 const server = new ApolloServer({
-  typeDefs: fs.readFileSync('./server/schema.graphql', {encoding: 'utf-8'}),
+  typeDefs: fs.readFileSync('./schema.graphql', {encoding: 'utf-8'}),
   resolvers,
   formatError: err => {
     console.log(err) //log to the server console

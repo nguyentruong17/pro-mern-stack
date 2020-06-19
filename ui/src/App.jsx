@@ -85,7 +85,8 @@ class IssueList extends React.Component {
 
   async graphQLFetch(query, variables = {}) {
     try {
-      const res = await fetch("/graphql", {
+      console.log(window.ENV.API_ENDPOINT)
+      const res = await fetch(window.ENV.API_ENDPOINT, { //we ini this global variable in index.html
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, variables }),
