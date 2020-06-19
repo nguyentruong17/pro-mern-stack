@@ -134,8 +134,8 @@ class IssueList extends React.Component {
     //   }
     // }`
 
-    const query = `mutation addIssue($issue: InputIssue!) {
-      addIssue(issue: $issue) {
+    const query = `mutation addIssue($issue: InputIssue!){
+      addIssue(issue: $issue){
         id
       }
     }

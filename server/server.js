@@ -3,8 +3,7 @@ const { ApolloServer, UserInputError } = require('apollo-server-express')
 const { MongoClient } = require('mongodb')
 const fs = require('fs')
 const { GraphQLScalarType } = require('graphql');
-//const { serialize } = require('v8');
-const { Kind, parseValue } = require('graphql/language')
+const { Kind } = require('graphql/language')
 const app = express();
 const DB_URL = 'mongodb://localhost/issuetracker';
 
@@ -94,8 +93,12 @@ const isCreatedLTEDue = (created_date, due_date) => {
 const validateAddingIssue = (issueToBeAdded) => {
   const errors = []
   //should i validate for the existence of title here or that'd be handled by graphql?
-  if (issueToBeAdded.title && issueToBeAdded.title.length < 3) {
+  if (issueToBeAdded.title.length < 3) {
     errors.push('Title must be at least 3 characters long!')
+  }
+
+  if (issueToBeAdded.owner.length === 0){
+    errors.push('Owner name cannot be empty!')
   }
 
   if (issueToBeAdded.due_at && !isCreatedLTEDue(issueToBeAdded.created_at, issueToBeAdded.due_at)) {
