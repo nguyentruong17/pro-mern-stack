@@ -1,0 +1,7 @@
+# node_modules/* is ignored by default, but can be added using !
+
+# Ignore built files except build/index.js
+#build/*
+#!build/index.js
+
+public/*

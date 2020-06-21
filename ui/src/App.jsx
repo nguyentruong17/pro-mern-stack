@@ -1,3 +1,9 @@
+/* eslint "react/react-in-jsx-scope": "off" */
+/* globals React ReactDOM */
+/* eslint "react/jsx-no-undef": "off" */
+/* eslint "no-alert": "off" */
+
+// eslint-disable-next-line react/prefer-stateless-function
 class IssueFilter extends React.Component {
   render() {
     return <div>This is a placeholder for the issue filter.</div>;
