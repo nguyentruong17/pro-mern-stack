@@ -91,8 +91,8 @@ class IssueList extends React.Component {
 
   async graphQLFetch(query, variables = {}) {
     try {
-      console.log(window.ENV.API_ENDPOINT)
-      const res = await fetch(window.ENV.API_ENDPOINT, { //we ini this global variable in index.html
+      const res = await fetch(window.ENV.API_ENDPOINT, {
+        //we ini this global variable in index.html
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, variables }),
@@ -122,10 +122,10 @@ class IssueList extends React.Component {
       }
     }`;
 
-    const data = await this.graphQLFetch(query)
-    if(data){
+    const data = await this.graphQLFetch(query);
+    if (data) {
       this.setState({ issues: data.issues });
-    } 
+    }
   }
 
   async createIssue(issue) {
@@ -148,7 +148,7 @@ class IssueList extends React.Component {
     }
     `;
 
-    const data = await this.graphQLFetch(query, { issue })
+    const data = await this.graphQLFetch(query, { issue });
     if (data) this.loadData();
   }
 
