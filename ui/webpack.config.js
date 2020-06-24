@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
     mode: 'development',
@@ -23,6 +24,12 @@ module.exports = {
             name: 'vendor', //that new bundle will be named as 'vendor'
             chunks: 'all'
         }
-    }
+    },
+    devtool: 'source-map',
+    // plugins: [
+    //     new webpack.DefinePlugin({ //allows to create global constants which can be configured at compile time.
+    //         _API_ENDPOINT_: JSON.stringify('http://localhost:8000/graphql'), 
+    //     })
+    // ]
 
 }

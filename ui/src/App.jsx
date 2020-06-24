@@ -1,9 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { HashRouter as Router} from 'react-router-dom'
 import "babel-polyfill";
-import IssueList from "./components/ViewIssues";
+import MainView from "./components/MainView.jsx";
 
-const element = <IssueList />;
+const element = (
+  <Router>
+    <MainView/>
+  </Router>
+)
 
 ReactDOM.render(element, document.getElementById("contents"));
 
