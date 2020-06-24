@@ -1,4 +1,5 @@
-/* globals React */
+import React from 'react';
+
 const IssueFilter = props => {
     return <div>This is a placeholder for the issue filter.</div>;
 }

@@ -1,4 +1,5 @@
-/* globals React */
+import React, { useState, useEffect } from 'react';
+
 import graphQLFetch from "../../graphQLFetch.js";
 
 import IssueFilter from './IssueFilter.jsx';
@@ -6,10 +7,10 @@ import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
 
 const IssueList =  (props) => {
-  const [issues, setIssues] = React.useState([]);
-  const [prevCreatedIssueId, setPrevCreatedIssueId] = React.useState(null);
+  const [issues, setIssues] = useState([]);
+  const [prevCreatedIssueId, setPrevCreatedIssueId] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const getIssues = async () => {
       const query = `query {
             issues {

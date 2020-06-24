@@ -1,4 +1,5 @@
-/* globals React */
+import React from 'react';
+
 const IssueAdd = ({ onAddIssue }) => {
 
   const handleSubmit = (e) => {
