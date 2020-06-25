@@ -1,30 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import graphQLFetch from "../../graphQLFetch.js";
 
-import IssueFilter from './IssueFilter.jsx';
-import IssueTable from './IssueTable.jsx';
-import IssueAdd from './IssueAdd.jsx';
+import IssueFilter from "./IssueFilter.jsx";
+import IssueTable from "./IssueTable.jsx";
+import IssueAdd from "./IssueAdd.jsx";
 
-const IssueList =  (props) => {
+const ViewIssues = (props) => {
   const [issues, setIssues] = useState([]);
   const [prevCreatedIssueId, setPrevCreatedIssueId] = useState(null);
 
-  useEffect(() => {
-    const getIssues = async () => {
-      const query = `query {
-            issues {
-              id title status owner created_at
-              efforts due_at
-            }
-          }`;
+  const { search } = useLocation();
+  const [params, setParams] = useState(new URLSearchParams(search));
 
-      const data = await graphQLFetch(query);
+  //effect hook for when the location changes
+  useEffect(() => {
+    //console.log(search);
+    setParams(new URLSearchParams(search));
+  }, [search]);  
+  
+  useEffect(() => {
+    const vars = {};
+    console.log(params.get("status"));
+    if (params.get("status")) vars.status = params.get("status");
+    const getIssues = async () => {
+      const query = `query filteredIssues ($status: StatusType){
+        issues (status: $status){
+          id title status owner 
+          created_at efforts due_at
+        }
+      }`;
+
+      const data = await graphQLFetch(query, vars);
       const fetchedIssues = data ? data.issues : [];
       setIssues(fetchedIssues);
     };
     getIssues();
-  }, [prevCreatedIssueId]);
+  }, [prevCreatedIssueId, params]);
 
   const onAddIssue = async (issue) => {
     // const query = `mutation {
@@ -63,4 +76,4 @@ const IssueList =  (props) => {
   );
 };
 
-export default IssueList;
+export default ViewIssues;

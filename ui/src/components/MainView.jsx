@@ -2,16 +2,20 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import NavBar from "./Common/NavBar.jsx";
-import IssueList from "./ViewIssues";
+import ViewIssues from "./ViewIssues";
+import EditIssue from './EditIssue';
 import ReportIssue from "./ReportIssue";
 import NotFound from "./Common/NotFound.jsx";
 
 const routes = [
   {
-    component: IssueList,
+    component: ViewIssues,
     path: "/issues",
   },
-
+  {
+    component: EditIssue,
+    path: "/edit/:id", 
+  },
   {
     component: ReportIssue,
     path: "/report",
@@ -26,7 +30,7 @@ const MainView = (props) => {
         <Redirect exact from="/" to="/issues" />
         {routes.map((route) => (
           <Route key={route.path} path={route.path}>
-            <route.component />
+            <route.component/>
           </Route>
         ))}
         <Route component={NotFound} />

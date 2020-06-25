@@ -40,7 +40,7 @@ enum StatusType {
 
 type Query {
   about: String!
-  issues: [Issue!]! #the return value cannot be null, as well as each element in the list
+  issues(status: StatusType): [Issue!]! #the return value cannot be null, as well as each element in the list
 }
 
 type Mutation {

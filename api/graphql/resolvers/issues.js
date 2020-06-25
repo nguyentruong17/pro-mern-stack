@@ -46,7 +46,8 @@ const getIssues = (obj, args, context, info) => {
   //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
   //return issuesDB
   const DB = getDB();
-  return DB.collection("issues").find().toArray(); //async
+  const { status } = args
+  return DB.collection("issues").find( status ? { status } : {} ).toArray(); //async
 };
 const addIssue = async (obj, args, context, info) => {
   const { issue } = args;

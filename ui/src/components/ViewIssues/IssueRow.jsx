@@ -10,6 +10,7 @@ const IssueRow = ({ issue }) => {
       <td>{issue.efforts}</td>
       <td>{issue.due_at}</td>
       <td>{issue.title}</td>
+      <td><a href={`/#/edit/${issue.id}`}>Edit</a></td>
     </tr>
   );
 };
