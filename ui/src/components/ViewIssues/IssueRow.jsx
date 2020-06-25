@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
 const IssueRow = ({ issue }) => {
   return (
@@ -10,7 +11,11 @@ const IssueRow = ({ issue }) => {
       <td>{issue.efforts}</td>
       <td>{issue.due_at}</td>
       <td>{issue.title}</td>
-      <td><a href={`/#/edit/${issue.id}`}>Edit</a></td>
+      <td>
+        <Link to={`/edit/${issue.id}`}>Edit</Link>         
+        {' | '}
+        <NavLink to= { {pathname: `/issues/${issue.id}`, search: useLocation().search } }>Details</NavLink>
+      </td>
     </tr>
   );
 };

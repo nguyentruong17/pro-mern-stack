@@ -49,6 +49,14 @@ const getIssues = (obj, args, context, info) => {
   const { status } = args
   return DB.collection("issues").find( status ? { status } : {} ).toArray(); //async
 };
+
+const getIssueById = (obj, args, context, info) => {
+  //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
+  //return issuesDB
+  const DB = getDB();
+  const { id } = args
+  return DB.collection("issues").findOne({ id }); //async
+}; 
 const addIssue = async (obj, args, context, info) => {
   const { issue } = args;
 
@@ -66,4 +74,4 @@ const addIssue = async (obj, args, context, info) => {
   return createdIssue; //anw, i dont see the point of finding the issue on the server, bc we can just append the insertedId to our object and return it
 };
 
-module.exports = { getIssues, addIssue };
+module.exports = { getIssues, getIssueById, addIssue };

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Route } from "react-router-dom";
 
 import graphQLFetch from "../../graphQLFetch.js";
 
 import IssueFilter from "./IssueFilter.jsx";
 import IssueTable from "./IssueTable.jsx";
 import IssueAdd from "./IssueAdd.jsx";
+import IssueDetail from "./IssueDetail.jsx";
 
 const ViewIssues = (props) => {
   const [issues, setIssues] = useState([]);
@@ -18,8 +19,8 @@ const ViewIssues = (props) => {
   useEffect(() => {
     //console.log(search);
     setParams(new URLSearchParams(search));
-  }, [search]);  
-  
+  }, [search]);
+
   useEffect(() => {
     const vars = {};
     console.log(params.get("status"));
@@ -72,6 +73,9 @@ const ViewIssues = (props) => {
       <IssueTable issues={issues} />
       <hr />
       <IssueAdd onAddIssue={onAddIssue} />
+      <hr />
+      <Route path="/issues/:id"><IssueDetail/></Route>
+      
     </>
   );
 };

@@ -22,6 +22,7 @@ const resolvers = {
   Query: {
     about: about.getAboutMessage,
     issues: issue.getIssues,
+    issueById: issue.getIssueById,
   },
   Mutation: {
     setAboutMessage: about.setAboutMessage,

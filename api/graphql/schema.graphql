@@ -16,6 +16,7 @@ type Issue {
     created_at: GraphQLDate!
     efforts: Int
     due_at: GraphQLDate
+    description: String
 }
 
 input InputIssue {
@@ -25,6 +26,7 @@ input InputIssue {
     owner: String!
     effort: Int
     due_at: GraphQLDate
+    description: String
     # this is different from type Issue, since fields like id and created_at are handled by the server
 }
 
@@ -41,6 +43,7 @@ enum StatusType {
 type Query {
   about: String!
   issues(status: StatusType): [Issue!]! #the return value cannot be null, as well as each element in the list
+  issueById(id: Int!): Issue #ID! or Int! ?
 }
 
 type Mutation {
