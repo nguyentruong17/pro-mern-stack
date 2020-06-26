@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const path = require('path');
 
 require("dotenv").config();
 
@@ -13,7 +14,7 @@ const ENV = { API_ENDPOINT };
 
 //Hot-Module-Replacement functionality ~ this section is just too confusing
 //This middleware has to be installed before using the 'static' middleware,
-//otherwise the 'static' middleware will find the bundles and send them as the response 
+//otherwise the 'static' middleware will find the bundles and send them as the response
 //before the HMR takes effect
 const enableHMR = process.env.ENABLE_HMR || true;
 if (!!enableHMR && process.env.NODE_ENV !== "production") {
@@ -32,7 +33,7 @@ if (!!enableHMR && process.env.NODE_ENV !== "production") {
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 
   const compiler = webpack(webpackConfig);
-  app.use(devMiddleware(compiler)); 
+  app.use(devMiddleware(compiler));
   app.use(hotMiddleware(compiler));
 }
 
@@ -44,6 +45,10 @@ if (API_PROXY_TARGET) {
 
 app.get("/env.js", (req, res) => {
   res.send(`window.ENV = ${JSON.stringify(ENV)}`);
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve("public/index.html"));
 });
 
 app.listen(PORT, () => {

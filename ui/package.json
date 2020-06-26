@@ -2,10 +2,10 @@
   "name": "pro-mern-stack-2-ui",
   "version": "1.0.0",
   "description": "[UI]code following the book 'Pro MERN Stack, edition 2, by Vasan Subramanian",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "#start": "UI server. HMR is enabled in dev mode.",
-    "start": "nodemon -w . -w .env index.js",
+    "start": "nodemon -w server.js -w .env server.js",
     "#lint": "Runs ESLint on all relevant files",
     "lint": "eslint . --ext js, jsx",
     "#compile": "Generates JS bundles for production. Use with start.",

@@ -8,7 +8,8 @@ module.exports = {
     entry: { app: ['./src/App.jsx'] }, // "multi-main entry" when injecting multiple dependent files together and graph their dependencies into one "chunk".
     output: {
         filename: '[name].bundle.js', //[name] will be replaced by the chunk's name, i.e, app
-        path: path.resolve(__dirname, './public')
+        path: path.resolve(__dirname, './public'),
+        publicPath: '/', //change due to the effect of using BrowerRouter
     },
     module: { //compile/transform and bundle (webpack natively is for bundling, and using babel loader is to transforming App.jsx)
         rules: [
