@@ -13,18 +13,20 @@ const ViewIssues = (props) => {
   const [prevCreatedIssueId, setPrevCreatedIssueId] = useState(null);
 
   const { search } = useLocation();
-  const [params, setParams] = useState(new URLSearchParams(search));
+  // const [params, setParams] = useState(new URLSearchParams(search));
 
-  //effect hook for when the location changes
-  useEffect(() => {
-    //console.log(search);
-    setParams(new URLSearchParams(search));
-  }, [search]);
+  // //effect hook for when the location changes --> separate concerns
+  // useEffect(() => {
+  //   //console.log(search);
+  //   setParams(new URLSearchParams(search));
+  // }, [search]);
 
   useEffect(() => {
     const vars = {};
-    console.log(params.get("status"));
-    if (params.get("status")) vars.status = params.get("status");
+    //console.log(params.get("status"));
+    const status = new URLSearchParams(search).get("status")
+    if (status) vars.status = status;
+    
     const getIssues = async () => {
       const query = `query filteredIssues ($status: StatusType){
         issues (status: $status){
@@ -38,7 +40,7 @@ const ViewIssues = (props) => {
       setIssues(fetchedIssues);
     };
     getIssues();
-  }, [prevCreatedIssueId, params]);
+  }, [prevCreatedIssueId, search]);
 
   const onAddIssue = async (issue) => {
     // const query = `mutation {
