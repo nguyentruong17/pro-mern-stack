@@ -30,7 +30,7 @@ const validateAddingIssue = (issueToBeAdded) => {
 };
 
 //////// EXPORTS //////////
- 
+
 const getNextSequence = async (collectionName) => {
   const DB = getDB();
   const returnDoc = await DB.collection("counters").findOneAndUpdate(
@@ -46,17 +46,28 @@ const getIssues = (obj, args, context, info) => {
   //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
   //return issuesDB
   const DB = getDB();
-  const { status } = args
-  return DB.collection("issues").find( status ? { status } : {} ).toArray(); //async
+  const { status, minEffort, maxEffort } = args;
+
+  //projecttion for querying from server
+  const projection = {};
+  if (status) projection.status = status;
+  if (minEffort || maxEffort) {
+    projection.efforts = {}; //if this were to be empty, nothing would be return
+    if (minEffort) projection.efforts.$gte = minEffort;
+    if (maxEffort) projection.efforts.$lte = maxEffort;
+  }
+
+  //returning
+  return DB.collection("issues").find(projection).toArray(); //async
 };
 
 const getIssueById = (obj, args, context, info) => {
   //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
   //return issuesDB
   const DB = getDB();
-  const { id } = args
+  const { id } = args;
   return DB.collection("issues").findOne({ id }); //async
-}; 
+};
 const addIssue = async (obj, args, context, info) => {
   const { issue } = args;
 

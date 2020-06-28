@@ -42,7 +42,11 @@ enum StatusType {
 
 type Query {
   about: String!
-  issues(status: StatusType): [Issue!]! #the return value cannot be null, as well as each element in the list
+  issues(
+    status: StatusType
+    minEffort: Int
+    maxEffort: Int
+  ): [Issue!]! #the return value cannot be null, as well as each element in the list
   issueById(id: Int!): Issue #ID! or Int! ?
 }
 

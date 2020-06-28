@@ -22,18 +22,31 @@ const ViewIssues = (props) => {
   // }, [search]);
 
   useEffect(() => {
+    //vars for querying
     const vars = {};
     //console.log(params.get("status"));
-    const status = new URLSearchParams(search).get("status")
+    const params = new URLSearchParams(search);
+    const status = params.get("status");
+    const maxEffort = Number.parseInt(params.get("maxEffort"));
+    const minEffort = Number.parseInt(params.get("minEffort"));
     if (status) vars.status = status;
-    
+    if (maxEffort) vars.maxEffort = maxEffort;
+    if (minEffort) vars.minEffort = minEffort;
+
     const getIssues = async () => {
-      const query = `query filteredIssues ($status: StatusType){
-        issues (status: $status){
-          id title status owner 
-          created_at efforts due_at
-        }
-      }`;
+      const query = `query filteredIssues (
+        $status: StatusType
+        $minEffort: Int
+        $maxEffort: Int)
+          {issues (
+            status: $status
+            minEffort: $minEffort
+            maxEffort: $maxEffort)
+              {
+              id title status owner 
+              created_at efforts due_at
+              }
+          }`;
 
       const data = await graphQLFetch(query, vars);
       const fetchedIssues = data ? data.issues : [];
@@ -76,8 +89,9 @@ const ViewIssues = (props) => {
       <hr />
       <IssueAdd onAddIssue={onAddIssue} />
       <hr />
-      <Route path="/issues/:id"><IssueDetail/></Route>
-      
+      <Route path="/issues/:id">
+        <IssueDetail />
+      </Route>
     </>
   );
 };
