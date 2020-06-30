@@ -3,6 +3,7 @@ const { getDB } = require("../../mongodb");
 //const DB = getDB() //doesnt work
 
 const getIssueFromDB = async (id) => {
+  const DB = getDB();
   return await DB.collection("issues").findOne({ id }); //async
 }
 

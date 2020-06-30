@@ -24,7 +24,7 @@ input InputIssue {
     "Optional, will be set to New if not supplied" #description
     status: StatusType = New #default value to New
     owner: String!
-    effort: Int
+    efforts: Int
     due_at: GraphQLDate
     description: String
     # this is different from type Issue, since fields like id and created_at are handled by the server
@@ -35,7 +35,7 @@ input InputIssue {
 input UpdateIssue {
   title: String
   status: StatusType
-  effort: Int
+  efforts: Int
   due_at: GraphQLDate
   description: String
 }

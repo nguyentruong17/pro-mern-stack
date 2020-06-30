@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import graphQLFetch from "../../graphQLFetch";
+import graphQLFetch from "../../utils/graphQLFetch";
 
 const IssueDetail = (props) => {
   const { id } = useParams();

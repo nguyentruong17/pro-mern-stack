@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Route } from "react-router-dom";
 
-import graphQLFetch from "../../graphQLFetch.js";
+import graphQLFetch from "../../utils/graphQLFetch";
 
 import IssueFilter from "./IssueFilter.jsx";
 import IssueTable from "./IssueTable.jsx";
