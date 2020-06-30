@@ -30,6 +30,16 @@ input InputIssue {
     # this is different from type Issue, since fields like id and created_at are handled by the server
 }
 
+#Inputs for issueUpdate: all are optional. Whichever is specified will
+#be set to the given value, undefined fields will remain unmodified.
+input UpdateIssue {
+  title: String
+  status: StatusType
+  effort: Int
+  due_at: GraphQLDate
+  description: String
+}
+
 enum StatusType {
     New
     Assigned
@@ -53,4 +63,5 @@ type Query {
 type Mutation {
   setAboutMessage(message: String!): String
   addIssue(issue: InputIssue!): Issue!
+  updateIssue(id: Int!, changes: UpdateIssue!): Issue!
 }

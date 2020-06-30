@@ -1,6 +1,11 @@
 const { UserInputError } = require("apollo-server-express");
 const { getDB } = require("../../mongodb");
 //const DB = getDB() //doesnt work
+
+const getIssueFromDB = async (id) => {
+  return await DB.collection("issues").findOne({ id }); //async
+}
+
 const getBiggerDate = (date1, date2) => {
   return date1 >= date2 ? date1 : date2;
 };
@@ -61,13 +66,13 @@ const getIssues = (obj, args, context, info) => {
   return DB.collection("issues").find(projection).toArray(); //async
 };
 
-const getIssueById = (obj, args, context, info) => {
+const getIssueById = async (obj, args, context, info) => {
   //this resolver now becomes a async func, and is handled by graph-ql: a resolver can return a value or a Promise
   //return issuesDB
-  const DB = getDB();
   const { id } = args;
-  return DB.collection("issues").findOne({ id }); //async
+  return await getIssueFromDB(id); //async
 };
+
 const addIssue = async (obj, args, context, info) => {
   const { issue } = args;
 
@@ -85,4 +90,19 @@ const addIssue = async (obj, args, context, info) => {
   return createdIssue; //anw, i dont see the point of finding the issue on the server, bc we can just append the insertedId to our object and return it
 };
 
-module.exports = { getIssues, getIssueById, addIssue };
+const updateIssue = async (obj, args, context, info) => {
+  const { id, changes } = args;
+  if (changes.title || changes.due_at) { //if statement to run validation for title and due_at fields
+    const issueFromDb = await getIssueFromDB(id);
+    Object.assign(issueFromDb, changes); //merge the changes to issueFromDb
+    validateAddingIssue(issueFromDb);
+  }
+
+  const DB = getDB();
+  await DB.collection("issue").updateOne( { id }, { $set: changes } );
+  return await DB.collection("issue").findOne({ id });
+
+
+}
+
+module.exports = { getIssues, getIssueById, addIssue, updateIssue };
